@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title data-i18n="title">Reflection Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .language-switcher {
+      margin-bottom: 20px;
+    }
+    button {
+      margin-right: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      height: 80px;
+    }
+    .questions p {
+      font-weight: bold;
+    }
+    #submit-btn {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: 2px solid #000;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1 data-i18n="welcome">Welcome to My Reflection Page</h1>
+
+  <div class="language-switcher">
+    <button type="button" onclick="changeLanguage('en')">English</button>
+    <button type="button" onclick="changeLanguage('fr')">Français</button>
+    <button type="button" onclick="changeLanguage('es')">Español</button>
+  </div>
+
+  <form id="reflection-form" class="questions">
+    <label for="answer1" data-i18n="q1">What did you enjoy most about the course?</label>
+    <textarea id="answer1" name="answer1" placeholder="Type your answer here..."></textarea>
+
+    <label for="answer2" data-i18n="q2">What was the most challenging part?</label>
+    <textarea id="answer2" name="answer2" placeholder="Type your answer here..."></textarea>
+
+    <label for="answer3" data-i18n="q3">What could be improved?</label>
+    <textarea id="answer3" name="answer3" placeholder="Type your answer here..."></textarea>
+
+    <button id="submit-btn" type="submit" data-i18n="submit">Submit</button>
+  </form>
+
+  <script src="i18next.min.js"></script>
+  <script src="translations.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
