@@ -1,108 +1,98 @@
 const request = require('supertest');
-const app = require('../server');
-const { sequelize } = require('../config/config');
-const { Manager } = require('../models');
+const app = require('../app');
+const { User, Manager } = require('../models');
 const generateToken = require('../utils/token');
 
 describe('Manager API Integration Tests', () => {
-  let testManagerId;
-  let authToken;
+  let managerUser, managerProfile, managerToken;
 
   beforeAll(async () => {
-    await sequelize.sync({ force: true });
-
-    // Create a manager directly via model for authentication
-    const manager = await Manager.create({
-      name: 'Auth Manager',
-      email: 'authmanager@example.com',
-      password: 'authpass123'
+    // Create a test manager user and profile
+    const bcrypt = require('bcryptjs');
+    const hashedPassword = await bcrypt.hash('authpass123', 10);
+    managerUser = await User.create({
+      email: 'managerauth@example.com',
+      password: hashedPassword,
+      role: 'manager',
+      name: 'Test Manager'
     });
 
-    authToken = generateToken(manager.id, 'manager');
+    managerProfile = await Manager.create({
+      name: 'Test Manager Profile',
+      userId: managerUser.id
+    });
+
+    managerToken = generateToken(managerUser.id, managerUser.role);
   });
 
-  afterAll(async () => {
-    await sequelize.close();
+  describe('Positive Use Cases', () => {
+    test('should register a new manager user with valid fields', async () => {
+      const res = await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'newmanager@example.com',
+          password: 'password123',
+          role: 'manager',
+          extraData: {
+            name: 'New Manager'
+          }
+        });
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body).toHaveProperty('token');
+      expect(res.body.user.role).toBe('manager');
+    });
+
+    test('should login manager with valid credentials', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'managerauth@example.com',
+          password: 'authpass123'
+        });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('token');
+      expect(res.body.user.role).toBe('manager');
+    });
+
+    test('should get manager profile', async () => {
+      const res = await request(app)
+        .get(`/api/managers/${managerProfile.id}`)
+        .set('Authorization', `Bearer ${managerToken}`);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.name).toBe('Test Manager Profile');
+    });
   });
 
-  it('should create a new manager', async () => {
-    const res = await request(app)
-      .post('/api/managers')
-      .set('Authorization', `Bearer ${authToken}`)
-      .send({
-        name: 'Jane Doe',
-        email: 'janedoe@example.com',
-        password: 'securepass123'
-      });
+  describe('Negative Use Cases', () => {
+    test('should reject registration with duplicate email', async () => {
+      const res = await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'managerauth@example.com',
+          password: 'password123',
+          role: 'manager',
+          extraData: {
+            name: 'Duplicate Manager'
+          }
+        });
 
-    expect(res.statusCode).toBe(201);
-    expect(res.body).toHaveProperty('id');
-    expect(res.body).toHaveProperty('name', 'Jane Doe');
-    expect(res.body).toHaveProperty('email', 'janedoe@example.com');
+      expect(res.statusCode).toBe(400);
+      expect(res.body.message).toBe('Email already in use');
+    });
 
-    testManagerId = res.body.id;
-  });
+    test('should reject login with wrong password', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'managerauth@example.com',
+          password: 'wrongpassword'
+        });
 
-  it('should not allow duplicate email registration', async () => {
-    const res = await request(app)
-      .post('/api/managers')
-      .set('Authorization', `Bearer ${authToken}`)
-      .send({
-        name: 'Duplicate',
-        email: 'janedoe@example.com',
-        password: 'anotherpass'
-      });
-
-    expect(res.statusCode).toBe(400);
-    expect(res.body.message).toMatch(/Manager already exists/i);
-  });
-
-  it('should fetch all managers', async () => {
-    const res = await request(app)
-      .get('/api/managers')
-      .set('Authorization', `Bearer ${authToken}`);
-
-    expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBeGreaterThan(0);
-  });
-
-  it('should fetch a single manager by ID', async () => {
-    const res = await request(app)
-      .get(`/api/managers/${testManagerId}`)
-      .set('Authorization', `Bearer ${authToken}`);
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty('id', testManagerId);
-    expect(res.body).not.toHaveProperty('password');
-  });
-
-  it('should update manager info', async () => {
-    const res = await request(app)
-      .put(`/api/managers/${testManagerId}`)
-      .set('Authorization', `Bearer ${authToken}`)
-      .send({
-        name: 'Jane Updated',
-      });
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body.message).toMatch(/updated successfully/i);
-  });
-
-  it('should delete the manager', async () => {
-    const res = await request(app)
-      .delete(`/api/managers/${testManagerId}`)
-      .set('Authorization', `Bearer ${authToken}`);
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body.message).toMatch(/deleted successfully/i);
-  });
-
-  it('should return 404 for deleted manager', async () => {
-    const res = await request(app)
-      .get(`/api/managers/${testManagerId}`)
-      .set('Authorization', `Bearer ${authToken}`);
-
-    expect(res.statusCode).toBe(404);
+      expect(res.statusCode).toBe(401);
+      expect(res.body.message).toBe('Invalid credentials');
+    });
   });
 });

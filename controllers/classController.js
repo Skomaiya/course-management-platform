@@ -1,4 +1,4 @@
-const { Class } = require('../models');
+const Class = require('../models/class');
 
 // Create a new class
 const createClass = async (req, res) => {

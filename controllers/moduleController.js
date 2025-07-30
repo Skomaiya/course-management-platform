@@ -70,7 +70,7 @@ const deleteModule = async (req, res) => {
     }
 
     await module.destroy();
-    res.json({ message: 'Module deleted successfully' });
+    res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

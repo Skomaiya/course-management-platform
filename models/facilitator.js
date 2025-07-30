@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+const sequelize = require('../config/database');
 
 const Facilitator = sequelize.define('Facilitator', {
   id: {
@@ -7,17 +7,16 @@ const Facilitator = sequelize.define('Facilitator', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
+    userId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: 'users',
+      key: 'id',
+    },
+    onDelete: 'CASCADE',
+  },
   name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-    validate: { isEmail: true },
-  },
-  password: {
     type: DataTypes.STRING,
     allowNull: false,
   },

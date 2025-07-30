@@ -1,4 +1,4 @@
-const { sequelize } = require('../config/database');
+const sequelize = require('../config/database');
 // import models
 const Class = require('./class');
 const Student = require('./student');
@@ -8,6 +8,7 @@ const Module = require('./module');
 const Mode = require('./mode');
 const Cohort = require('./cohort');
 const Allocation = require('./allocation');
+const ActivityLog = require('./activityLog');
 const User = require('./user');
 
 
@@ -42,16 +43,20 @@ Allocation.belongsTo(Mode, { foreignKey: 'modeId' });
 Mode.hasMany(Allocation, { foreignKey: 'modeId' });
 
 // User → Student
-User.hasOne(Student, { foreignKey: 'userId' });
+User.hasOne(Student, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Student.belongsTo(User, { foreignKey: 'userId' });
 
 // User → Facilitator
-User.hasOne(Facilitator, { foreignKey: 'userId' });
+User.hasOne(Facilitator, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Facilitator.belongsTo(User, { foreignKey: 'userId' });
 
 // User → Manager
-User.hasOne(Manager, { foreignKey: 'userId' });
+User.hasOne(Manager, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Manager.belongsTo(User, { foreignKey: 'userId' });
+
+// ActivityLog → Allocation
+ActivityLog.belongsTo(Allocation, { foreignKey: 'allocationId' });
+Allocation.hasMany(ActivityLog, { foreignKey: 'allocationId' });
 
 
 // Export All Models
@@ -65,5 +70,6 @@ module.exports = {
   Mode,
   Cohort,
   Allocation,
+  ActivityLog,
   User,
 };
