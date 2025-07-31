@@ -1,7 +1,7 @@
 const sequelize = require("./config/database");
 const app = require("./app");
-const notificationWorker = require("./services/NotificationWorker");
-const reminderService = require("./services/Reminder"); // Import to initialize Redis queue processors
+const notification = require("./services/Notification");
+const reminderService = require("./services/Reminder");
 
 const PORT = process.env.PORT || 5000;
 
@@ -9,12 +9,11 @@ const startServer = async () => {
   try {
     await sequelize.authenticate();
     
-    // Sync database in all environments, but only drop in non-test environments
+    // Sync database without dropping in all environments
     if (process.env.NODE_ENV !== 'test') {
-      await sequelize.drop();
-      await sequelize.sync({ force: true });
+      await sequelize.sync({ alter: true });
     } else {
-      // In test environment, just sync without dropping
+      // In test environment, use force to ensure clean state
       await sequelize.sync({ force: true });
     }
     
@@ -26,7 +25,7 @@ const startServer = async () => {
       // Start notification worker in non-test environments
       if (process.env.NODE_ENV !== 'test') {
         try {
-          notificationWorker.start();
+          notification.start();
         } catch (error) {
           console.error('Failed to start notification worker:', error.message);
         }
@@ -38,7 +37,6 @@ const startServer = async () => {
   }
 };
 
-// Only run if not imported (e.g. in tests)
 if (require.main === module) {
   startServer();
 }

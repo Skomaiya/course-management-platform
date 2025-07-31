@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-// Database configuration with direct values
+// Database configuration
 const DB_HOST = "localhost";
 const DB_PORT = 3306;
 const DB_USER = "root";
@@ -9,9 +9,9 @@ const DB_PASSWORD = "Passme1$";
 // Setup database function - creates databases if they don't exist
 async function setupDatabase() {
   try {
-    // Create a connection to MySQL server (without specifying database)
+    // Create a connection to MySQL server
     const setupSequelize = new Sequelize(
-      'mysql', // Use 'mysql' as database name to connect to MySQL server
+      'mysql',
       DB_USER,
       DB_PASSWORD,
       {

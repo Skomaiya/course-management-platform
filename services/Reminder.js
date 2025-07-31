@@ -71,7 +71,7 @@ reminderQueue.process('overdue-reminder', async (job) => {
       'URGENT: Overdue Activity Log Reminder',
       message
     );
-    console.log(`📧 Overdue reminder sent to ${facilitatorEmail}`);
+    console.log(`Overdue reminder sent to ${facilitatorEmail}`);
     
     // Send urgent notification to managers
     const managers = await Manager.findAll({

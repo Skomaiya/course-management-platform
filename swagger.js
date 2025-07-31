@@ -21,10 +21,6 @@ const options = {
         url: 'http://localhost:5000',
         description: 'Development server'
       },
-      {
-        url: 'https://api.coursemanagement.com',
-        description: 'Production server'
-      }
     ],
     components: {
       securitySchemes: {

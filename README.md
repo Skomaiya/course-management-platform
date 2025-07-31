@@ -2,6 +2,9 @@
 
 A comprehensive REST API for managing course allocations, facilitators, students, and activity tracking in an educational institution.
 
+**Presesntation video:**
+https://youtu.be/2MGQJA_vzeg
+
 ## Features
 
 ### Module 1: Course Allocation System
