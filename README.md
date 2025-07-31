@@ -37,6 +37,55 @@ https://course-management-platform-frontend.onrender.com/
 - **Comprehensive Testing**: 131+ tests covering all functionality
 - **Swagger Documentation**: Complete API documentation
 
+## Environment Variables
+
+The application uses environment variables for configuration. Copy `env.example` to `.env` and modify the values as needed:
+
+```bash
+cp env.example .env
+```
+
+### Required Environment Variables
+
+#### Database Configuration
+- `DB_HOST` - Database host (default: localhost)
+- `DB_PORT` - Database port (default: 3306)
+- `DB_USER` - Database username (default: root)
+- `DB_PASSWORD` - Database password
+- `DB_NAME` - Database name (default: course_dev_schema)
+- `DB_DIALECT` - Database dialect (default: mysql)
+- `DB_LOGGING` - Enable SQL logging (default: false)
+
+#### JWT Configuration
+- `JWT_SECRET` - Secret key for JWT tokens
+- `JWT_EXPIRES_IN` - Token expiration time (default: 1d)
+
+#### Email Configuration
+- `EMAIL_USER` - Email username (default: s.komaiya@alustudent.com)
+- `EMAIL_PASS` - Email password
+- `EMAIL_SERVICE` - Email service provider (default: gmail)
+- `EMAIL_FROM_NAME` - Sender name (default: Course Platform)
+
+#### Redis Configuration
+- `REDIS_HOST` - Redis host (default: 127.0.0.1)
+- `REDIS_PORT` - Redis port (default: 6379)
+- `REDIS_URL` - Redis connection URL (default: redis://localhost:6379)
+- `REDIS_MONITOR_INTERVAL` - Redis monitor interval in ms (default: 5000)
+
+#### API Configuration
+- `API_BASE_URL` - Base URL for API documentation (default: http://localhost:5000)
+
+#### Application Configuration
+- `NODE_ENV` - Environment (development/production/test)
+- `PORT` - Server port (default: 5000)
+
+### Production Considerations
+
+For production deployment, make sure to:
+1. Set a strong `JWT_SECRET`
+2. Use secure database credentials
+3. Configure proper email credentials
+
 ## API Documentation
 
 ### Accessing Swagger Documentation
@@ -133,25 +182,13 @@ The Swagger UI provides:
    npm install
    ```
 
-3. **Environment Setup**
-   Create a `.env` file in the root directory:
-   ```env
-   DB_HOST=localhost
-   DB_USER=your_username
-   DB_PASSWORD=your_password
-   DB_NAME=course_management
-   JWT_SECRET=your_jwt_secret
-   REDIS_URL=redis://localhost:6379
-   PORT=5000
-   ```
-
-4. **Database Setup**
+3. **Database Setup**
    ```bash
    # Run database setup
    node setup-db.js
    ```
 
-5. **Start the server**
+4. **Start the server**
    ```bash
    npm start
    ```
@@ -208,7 +245,6 @@ The platform includes a Redis-backed notification system that:
 ## API Statistics
 
 - **Total Endpoints**: 21 documented endpoints
-- **Test Coverage**: 131+ tests
 - **Authentication**: JWT-based with role-based access
 - **Documentation**: Complete Swagger/OpenAPI 3.0 documentation
 

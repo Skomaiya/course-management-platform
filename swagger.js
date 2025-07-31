@@ -1,4 +1,5 @@
 const swaggerJsdoc = require('swagger-jsdoc');
+require('dotenv').config();
 
 const options = {
   definition: {
@@ -6,7 +7,7 @@ const options = {
     info: {
       title: 'Course Management Platform API',
       version: '1.0.0',
-      description: 'A comprehensive API for managing course allocations, facilitators, students, and activity tracking in an educational institution.',
+      description: 'A comprehensive REST API for managing course allocations, facilitators, students, and activity tracking in an educational institution.',
       contact: {
         name: 'API Support',
         email: 'support@coursemanagement.com'
@@ -18,8 +19,8 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:5000',
-        description: 'Development server'
+        url: process.env.API_BASE_URL || 'http://localhost:5000',
+        description: process.env.NODE_ENV || 'Development server'
       },
     ],
     components: {
