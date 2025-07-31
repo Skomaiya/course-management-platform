@@ -61,7 +61,7 @@ cp env.example .env
 - `JWT_EXPIRES_IN` - Token expiration time (default: 1d)
 
 #### Email Configuration
-- `EMAIL_USER` - Email username (default: s.komaiya@alustudent.com)
+- `EMAIL_USER` - Email username
 - `EMAIL_PASS` - Email password
 - `EMAIL_SERVICE` - Email service provider (default: gmail)
 - `EMAIL_FROM_NAME` - Sender name (default: Course Platform)
