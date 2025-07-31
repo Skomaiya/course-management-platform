@@ -2,8 +2,12 @@
 
 A comprehensive REST API for managing course allocations, facilitators, students, and activity tracking in an educational institution.
 
-**Presesntation video:**
+**Presentation video:**
 https://youtu.be/2MGQJA_vzeg
+
+**Reflection Page:**
+https://course-management-platform-frontend.onrender.com/
+
 
 ## Features
 
